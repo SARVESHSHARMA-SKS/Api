@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      button {
+        height: 40px;
+        width: 150px;
+        font-size: 20px;
+        color: white;
+        background-color: rgb(6, 6, 105);
+        border-radius: 5px;
+        border-color: red;
+        margin-top: 10px;
+      }
+      .main {
+        display: flex;
+        height: 30vh;
+        width: 40vw;
+        flex-flow: column;
+        align-items: center;
+        margin: auto;
+        background-color: pink;
+        border: 1px solid purple;
+      }
+      #movieName {
+        height: 40px;
+        width: 200px;
+        font-size: 20px;
+        font-weight: 600;
+        border-radius: 7px;
+        border-color: black;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main">
+      <h1 style="color: purple">Omdb Movie Details</h1>
+      <input type="text" id="movieName" placeholder="Movie Name" />
+      <button onclick="movieRequest()">Result</button>
+    </div>
+  </body>
+</html>
+<script>
+  async function movieRequest() {
+    try {
+      var movieName = document.getElementById("movieName").value;
+      let response = await fetch(
+        `http://www.omdbapi.com/?t=${movieName}&apikey=29ea16bf`
+      );
+      let data = await response.json();
+
+      var div = document.createElement("div");
+      var img = document.createElement("img");
+      var errimg = document.createElement("img");
+      div.setAttribute(
+        "style",
+        "display:flex;justify-content:flex-end;font-size:15px;width:40vw;margin:auto;font-family:Arial;border:1px solid blue;background-color:#ff4d4d;float:left"
+      );
+      document.body.appendChild(div);
+      img.src = data.Poster;
+      errimg.src =
+        "https://freefrontend.com/assets/img/html-funny-404-pages/SVG-Animation-404-Page.png";
+      img.setAttribute(
+        "style",
+        "width:150px;height:150px;float:left;display:flex;justify-content:space-between"
+      );
+      errimg.setAttribute("style", "width:300px;height:300px;margin:auto");
+      var tag = document.createElement("h1");
+      if (data.Title == undefined) {
+        document.body.appendChild(errimg);
+      } else {
+        div.innerHTML = `
+          <p>Title : ${data.Title}</p>
+          <p>Year : ${data.Year}</p>
+          <p>Rating : ${data.Rated}</p>
+          <p>Language : ${data.Language}</p>
+          <p>Country : ${data.Country}</p>
+          <p>imdb rating:${data.imdbRating}<p>
+         `;
+        div.appendChild(img);
+        if (data.imdbRating > 8.5) {
+          div.setAttribute(
+            "style",
+            " display:flex;justify-content:flex-end;background-color:green;width:40vw"
+          );
+          tag.innerHTML = `Highly recommended`;
+          document.body.appendChild(tag);
+        }
+      }
+      console.log("data:", data);
+    } catch (err) {
+      console.log("err", err);
+    }
+  }
+</script>
